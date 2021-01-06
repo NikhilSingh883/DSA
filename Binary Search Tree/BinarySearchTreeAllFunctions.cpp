@@ -97,3 +97,42 @@ void findPreSuc(Node* root, Node*& pre, Node*& suc, int key)
     } 
     
 }
+
+// Populate Inorder Successor for all nodes
+void inorder(struct node* p,vector<struct node*> &vec){
+    if(!p) return;
+    
+    inorder(p->left,vec);
+    vec.push_back(p);
+    inorder(p->right,vec);
+}
+
+void populateNext(struct node* p)
+{
+
+    vector<struct node*> in;
+    inorder(p,in);
+    
+    struct node* tmp = new node(-1);
+    
+    for(int i=0;i<in.size()-1;i++){
+        in[i]->next = in[i+1];
+    }
+    // in[in.size()-1]->next = tmp;
+}
+
+// LCA of BST
+
+Node* LCA(Node *root, int n1, int n2)
+{
+    if(!root) return root;
+    
+    if(root->data < n1 && root->data < n2)    
+        return LCA(root->right,n1,n2);
+    
+    if(root->data > n1 && root->data > n2)    
+        return LCA(root->left,n1,n2);
+        
+    return root;
+}
+
