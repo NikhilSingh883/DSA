@@ -128,8 +128,6 @@ public:
             
             curr = curr->right;
         }
-        void 
-        
         return in;
     }
 
@@ -314,9 +312,7 @@ public:
         bool bal = true;
         if(root == NULL) return bal;
         int h = isBal(root,&bal);
-        
         return bal;
-        
     }
     
     int isBal(TreeNode* root,bool *bal){

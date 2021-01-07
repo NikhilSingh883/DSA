@@ -136,3 +136,53 @@ Node* LCA(Node *root, int n1, int n2)
     return root;
 }
 
+// binary tree to BST
+
+void pre(Node* root,vector<int> &v){
+    if(!root) return;
+    v.push_back(root->data);
+    if(root->left)
+    pre(root->left,v);
+    if(root->right)
+    pre(root->right,v);
+}
+void inorder(Node* root,vector<int> v,int &index){
+    if(!root) return;
+    if(root->left)
+    inorder(root->left,v,index);
+    root->data=v[index++];
+    if(root->right)
+    inorder(root->right,v,index);
+}
+Node *binaryTreeToBST (Node *root)
+{
+    if(!root) return root;
+    vector<int> v;
+    int index=0;
+    pre(root,v);
+    sort(v.begin(),v.end());
+    inorder(root,v,index);
+    return root;
+}
+
+// BST from preorder
+
+    TreeNode* build(vector<int> pre,int &i,int min,int max){
+        TreeNode* root = NULL;
+        
+        if(pre[i]>min && pre[i]<max){
+            root = new TreeNode(pre[i]);
+            i++;
+            
+            if(i<pre.size())
+                root->left = build(pre,i,min,root->val);
+            if(i<pre.size())
+                root->right = build(pre,i,root->val,max);
+        }
+        return root;
+    }
+    TreeNode* bstFromPreorder(vector<int>& preorder) {
+        int i=0;
+        return build(preorder,i,INT_MIN,INT_MAX);
+    }
+
