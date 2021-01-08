@@ -452,5 +452,106 @@ void printConflicting(Interval appt[],int n){
     }
 }
 
+// preorder to postorder
+Node* build(int min,int max,int &i,int pre[],int n){
+    Node* root = NULL;
+    
+    if(pre[i] > min && pre[i]<max){
+        root = newNode(pre[i]);
+        i++;
+        
+        if(i<n)
+            root->left = build(min,root->data,i,pre,n);
+        if(i<n)
+            root->right = build(root->data,max,i,pre,n);
+    }
+    
+    return root;
+}
+
+void postOrder(Node* root){
+    if(!root) return;
+    
+    postOrder(root->left);
+    postOrder(root->right);
+    cout << root->data <<" ";
+}
+
+Node* constructTree(int pre[], int size) {
+    //code here
+    int i=0;
+    Node* root = build(INT_MIN,INT_MAX,i,pre,size);
+    // postOrder(root);
+    return root;
+}
+
+// Check whether BST contains Dead End
+
+void storeNodes(Node * root, unordered_set<int> &all_nodes,
+                          unordered_set<int> &leaf_nodes)
+{
+    if (root == NULL)
+        return ;
+ 
+    all_nodes.insert(root->data);
+ 
+    if (root->left==NULL && root->right==NULL)
+    {
+        leaf_nodes.insert(root->data);
+        return ;
+    }
+ 
+    storeNodes(root-> left, all_nodes, leaf_nodes);
+    storeNodes(root->right, all_nodes, leaf_nodes);
+}
+ 
+bool isDeadEnd(Node *root)
+{
+    if (root == NULL)
+        return false ;
+ 
+    unordered_set<int> all_nodes, leaf_nodes;
+ 
+    all_nodes.insert(0);
+ 
+    storeNodes(root, all_nodes, leaf_nodes);
+ 
+    for (auto i = leaf_nodes.begin() ; i != leaf_nodes.end(); i++)
+    {
+        int x = (*i);
+ 
+        if (all_nodes.find(x+1) != all_nodes.end() &&
+            all_nodes.find(x-1) != all_nodes.end())
+            return true;
+    }
+ 
+    return false ;
+}
+
+// flatten BST
+
+void inorder(Node*root ,Node* prev){
+    if(!root) return;
+
+    inorder(root->left,prev);
+    prev->left = NULL;
+    prev->right = root;
+    prev = root;
+    inorder(root->right,prev)
+}
+
+Node* flatten(Node* root){
+
+    Node* prev = newNode(-1);
+
+    inorder(root,prev);
+
+    prev->left = NULL;
+    Node* ret = prev->right;
+
+    delete prev;
+    return ret;
+}
+
 
 
