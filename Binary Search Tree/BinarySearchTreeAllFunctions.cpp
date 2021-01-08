@@ -383,3 +383,74 @@ int countPairs(Node* root1, Node* root2, int x)
     return count;
 }
 
+// nodes in the range
+
+int getCount(Node *root, int l, int h)
+{
+    if(!root) return 0;
+    
+    if(root->data ==l && root->data == h) return 1;
+    
+    if(root->data >=l && root->data <= h)
+        return 1 + getCount(root->left,l,h)
+                 + getCount(root->right,l,h);
+                 
+    else if(root->data < l)
+        return getCount(root->right,l,h);
+    
+    return getCount(root->left,l,h);
+}
+
+// conflicting nodes with the interval
+
+ITNode* insert(ITNode *root,Interval i){
+    if(root == NULL) return new ITNode(i);
+
+    int l = root->i->low;
+
+    if(i.low < l ){
+        root->left = insert(root->left,i);
+    }
+    else root->right = insert(root->right,i);
+
+    if(root->max < i.high)
+        root->max = i.high;
+
+    return root;
+}
+
+bool doOverlap(Interval i,Interval j){
+    if(i.low < j.high && j.low < u.high)
+        return true;
+    return false;
+}
+
+Interval* overlapSearch(ITNode *root,Interval i){
+    if(!root) return root;
+
+    if(doOverlap(*(root->i),i))
+        return root->i;
+
+    if(!root->left && root->left->max >= i.low)
+        return overlapSearch(root->left,i);
+
+    return overlapSearch(root->right,i);
+}
+
+void printConflicting(Interval appt[],int n){
+    ITNode* root = NULL;
+
+    root = insert(root,appt[0]);
+
+    for(int i=1;i<n;i++){
+        Interval* res = overlapSearch(root,appt[i]);
+        if(res){
+            cout << res->low <<" "<<res->high<<endl;
+        }
+
+        root = insert(root,appt[i]);
+    }
+}
+
+
+
