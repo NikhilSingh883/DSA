@@ -420,7 +420,7 @@ ITNode* insert(ITNode *root,Interval i){
 }
 
 bool doOverlap(Interval i,Interval j){
-    if(i.low < j.high && j.low < u.high)
+    if(i.low < j.high && j.low < i.high)
         return true;
     return false;
 }
@@ -553,5 +553,82 @@ Node* flatten(Node* root){
     return ret;
 }
 
+// largest bst in bt
+int h;
 
+bool func(Node* root, int *mx, int* mn, int *num)
+{
+    if(root == NULL)
+    return true;
+    
+    int m1 = INT_MIN,m2 = INT_MAX, x1 = 0;
+    int m3 = INT_MIN, m4 = INT_MAX, x2 = 0;
+    bool a = func(root->left, &m1, &m2, &x1);
+    bool b = func(root->right, &m3, &m4, &x2);
+    
+    *mx = max(root->data, max(m1, m3));
+    *mn = min(root->data, min(m2, m4));
+    
+ 
+    
+    if(a == true && b == true && root->data < m4 && root->data > m1)
+    {
+        *num = x1+x2+1;
+        h = max(*num, h);
+        return true;
+    }
+    
+    return false;
+    
+    
+    
+}
+
+int largestBst(Node *root)
+{
+    h = INT_MIN;
+    int a = INT_MIN,b = INT_MAX, c = 0;
+    func(root, &a, &b, &c);
+    if(h == INT_MIN)
+    return 0;
+    
+    return h;
+    
+}
+
+// replace with least largest to its right
+
+void insert(Node*& node, int data, Node*& succ)
+{
+    if (node == NULL)
+        node = newNode(data);
+
+    if (data < node->data)
+    {
+        succ = node;
+        insert(node->left, data, succ);
+    }
+ 
+    else if (data > node->data)
+        insert(node->right, data, succ);
+}
+
+void replace(int arr[], int n)
+{
+    Node* root = NULL;
+
+    for (int i = n - 1; i >= 0; i--)
+    {
+        Node* succ = NULL;
+
+        insert(root, arr[i], succ);
+
+        if (succ)
+            arr[i] = succ->data;
+        else    
+            arr[i] = -1;
+    }
+}
+
+// 
 
