@@ -1,41 +1,42 @@
-int Solution::solve(string A, string B, vector<string> &C) 
-{
-    queue<string>q;
-    q.push(A);
-    int depth = 0;
-    int levelSize = 0;
-    set<string>s;
-    for(int i=0;i<C.size();i++)
-        s.insert(C[i]);
-    
-    while(!q.empty())
-    {
-        depth++;
-        levelSize = q.size();
-        while(levelSize--)
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        
+        unordered_set<string>uset(wordList.begin(), wordList.end());
+        
+        queue<string>q;
+        q.push(beginWord);
+        
+        int level = 0;
+        while(!q.empty())
         {
-            string word = q.front();
-            q.pop();
-            
-            for(int i=0;i<word.length();i++)
+            int n = q.size();
+            for(int j = 0; j < n; j++)
             {
-                string temp = word;
-                for(char c='a';c<='z';c++)
+                string cur = q.front();
+                q.pop();
+
+                if(cur == endWord)
                 {
-                    temp[i] = c;
-                    if(temp.compare(word) == 0)//skip the same word
-                        continue;
-                    if(temp.compare(B) == 0)
-                        return depth + 1;
-                    if(s.find(temp) != s.end())
-                    {
-                        q.push(temp);
-                        s.erase(temp);
-                    }
+                    return level+1;
                 }
+
+                for(int i = 0; i < cur.size(); i++)
+                {
+                    string curorig = cur;
+                    for(char ch = 'a'; ch <= 'z'; ch++)
+                    {
+                        cur[i] = ch;
+                        if(uset.find(cur) != uset.end())
+                        {
+                            q.push(cur);
+                            uset.erase(cur);
+                        }
+                    }
+                    cur = curorig;
+                }                
             }
+            
+            level ++;
         }
+        
+        return 0;
     }
-    
-    return 0;
-}
